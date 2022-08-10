@@ -56,7 +56,7 @@ print(words_vector[1:10])
 If you did everything correct you will have 5955 observations in words_vector and 1706 observations in
 vocabulary vector.
 
-```{r p1.3, include=TRUE}
+```{r p1.4, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 vocabulary = unique(words_vector)
 print(length(words_vector))
@@ -101,7 +101,7 @@ Episode 2. (20 points)
 function and vocab_data select words that have 2 edit distance from input and return words from
 vocab data sorted by probability.
 
-```{r p2.2, include=TRUE}
+```{r p3.1, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 library(shiny)
 library(shinythemes)
