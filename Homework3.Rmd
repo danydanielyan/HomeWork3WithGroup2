@@ -63,3 +63,35 @@ print(length(words_vector))
 print(length(vocabulary))
 
 ```
+Part 2
+
+5. Create new dataframe named vocab_data using vocabulary vector. Create new column named Count
+and calculate how many times each word occurs in words_vector.
+```{r p2.1, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+vocab_data = data.frame(vocabulary = vocabulary)
+a = table(words_vector)
+vocab_data$count = 1:length(vocab_data[,"vocabulary"])
+for(i in 1:length(vocabulary))
+{
+  vocab_data[i,"count"] = a[vocab_data[i,"vocabulary"]]
+}
+print(head(vocab_data, n = 20))
+
+```
+
+6. Create new column in vocab_data named “probs” which must be equal to Count/(length of
+words_vector).
+```{r p2.2, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+vocab_data$probs = vocab_data$count/length(words_vector) 
+head(vocab_data, n= 20)
+```
+7. Now read about adist() function. Describe in several sentences what does this function do.
+
+The function returns Levenshtein string distance between two string vectors.
+Levenshtein distance is the number of deletions, insertions and substitutions needed to make one string the same as the other.
+It takes 8 arguments. The first and the second are the vector strings. Third one called "costs" is a numeric vector or list specifying the costs of Insertion, deletion and substitution. If costs = NULL, each operation has a unit cost.
+Another important argument is called "counts". If it is TRUE, the function returns "counts" attribute containing the numbers of insertions, deletions and substitutions.
+The function returns a matrix with the approximate string distances of the elements of the first and the second arguments.  matrix[1,1] shows the Levenshtein distance between the first strings of the first and the second string vectors.
