@@ -106,6 +106,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(shiny)
 library(shinythemes)
 library(utils)
+library(wordcloud)
+library(tm)
+
 df = vocab_data
 ui <- fluidPage(
   theme = shinytheme("journal"),
@@ -114,17 +117,18 @@ ui <- fluidPage(
     sidebarPanel(
      textInput("word", "Input a word: ",""),
      actionButton("submit", "Submit"),
+     uiOutput("Text")
     ),
-    mainPanel(uiOutput("Text"))
+    mainPanel(plotOutput("plot"))
   )
 )
 chooseWords = function(word) {
   vec = c()
-  df = df[order(df$probs),]
-  mat = adist(word,df$vocabulary)
-  for(i in 1:length(df$vocabulary)) {
+  df1 = df[order(df$probs),]
+  mat = adist(word,df1$vocabulary)
+  for(i in 1:length(df1$vocabulary)) {
     if(mat[1,i] == 2) {
-      vec = c(vec,df[i,"vocabulary"])
+      vec = c(vec,df1[i,"vocabulary"])
     }
   }
   return(vec)
@@ -139,9 +143,22 @@ server <- function(input, output) {
   })
   output$Text = renderText({
     gotVector = wordsVector()
-    gotVector
+    if(length(gotVector)!= 0) {
+       paste("\n",gotVector)
+    }else{return(NULL)}
   })
-  
+   output$plot = renderPlot({
+     if(is.null(df)) {
+       return(NULL)
+     }else{
+    corpus <- Corpus(VectorSource(df[,"vocabulary"]))
+    corpus <- tm_map(corpus,  removeNumbers)
+    tdm <-TermDocumentMatrix(corpus, control=list(wordLengths=c(1,Inf), removePunctuation=T, stopwords=T, stemming=T))
+    freq <- slam::row_sums(tdm)
+    words <- names(freq)    
+    wordcloud(words, freq, min.freq = 1,max.words=200, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+     }
+   })
 }
 shinyApp(ui, server)
 ```
