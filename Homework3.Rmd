@@ -169,4 +169,5 @@ server <- function(input, output) {
 shinyApp(ui, server)
 ```
 9. Using vocab_data create interactive wordcloud.
+Done under 8.
 10. The best shiny app will get extra point.
