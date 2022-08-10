@@ -95,3 +95,57 @@ Levenshtein distance is the number of deletions, insertions and substitutions ne
 It takes 8 arguments. The first and the second are the vector strings. Third one called "costs" is a numeric vector or list specifying the costs of Insertion, deletion and substitution. If costs = NULL, each operation has a unit cost.
 Another important argument is called "counts". If it is TRUE, the function returns "counts" attribute containing the numbers of insertions, deletions and substitutions.
 The function returns a matrix with the approximate string distances of the elements of the first and the second arguments.  matrix[1,1] shows the Levenshtein distance between the first strings of the first and the second string vectors.
+
+Episode 2. (20 points)
+8. Your goal is to create shiny application where you will have a place to type a word then by using adist()
+function and vocab_data select words that have 2 edit distance from input and return words from
+vocab data sorted by probability.
+
+```{r p2.2, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(shiny)
+library(shinythemes)
+library(utils)
+ui <- fluidPage(
+  theme = shinytheme("journal"),
+  titlePanel("Word Cloud Creator"),
+  sidebarLayout(
+    sidebarPanel(
+     textInput("word", "Input a word: ",""),
+     actionButton("submit", "Submit"),
+    ),
+    mainPanel(uiOutput("Text"))
+  )
+)
+chooseWords = function(word) {
+  vec = c()
+  print(head(vocab_data,n = 5))
+  df = vocab_data[order(vocab_data$probs),]
+  print(head(vocab_data,n = 5))
+  mat = adist(word,vocab_data$vocabulary)
+  print(mat[1,1:5])
+  for(i in 1:length(vocab_data$vocabulary)) {
+    if(mat[1,i] == 2) {
+      vec = c(vec,df[i,"vocabulary"])
+    }
+  }
+  
+}
+server <- function(input, output) {
+  
+  wordsVector <- reactive({
+    if(input$submit > 0)
+    {
+      v = chooseWords(isolate(input$word))
+    }
+  })
+  output$Text = renderText({
+    wordsVector()
+    input$word
+  })
+  
+}
+shinyApp(ui, server)
+```
+9. Using vocab_data create interactive wordcloud.
+10. The best shiny app will get extra point.
