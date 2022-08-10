@@ -1,0 +1,65 @@
+---
+title: "Homework#3"
+author: "Group 2"
+date: '2022-08-10'
+output: pdf_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Part 1
+1. Using read.csv() function import SW_EpisodeIV.txt file into R. You must get something like this:
+## Rows: 1,011
+## Columns: 2
+## $ character <chr> "THREEPIO", "THREEPIO", "THREEPIO", "THREEPIO", "THREEPIO...
+## $ dialogue <chr> "Did you hear that? They've shut down the main reactor. ...
+
+```{r p1.1, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+dataframe = read.csv("SW_EpisodeIV.txt",sep= " ")
+str(dataframe)
+
+```
+2. Using dialogue column create new column named  where all punctuation will be removed.
+Then created new column called lower_dialogue where all words will be converted to lowercase. You
+must get something like this:
+## Rows: 1,011
+## Columns: 4
+## $ character <chr> "THREEPIO", "THREEPIO", "THREEPIO", "THREEPIO", "TH...
+## $ dialogue <chr> "Did you hear that? They've shut down the main rea...
+## $ string_dialogue <chr> "Did you hear that Theyve shut down the main react...
+## $ lower_dialogue <chr> "did you hear that theyve shut down the main react...
+
+```{r p1.2, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+dataframe$string_dialogue = gsub("[^[:alnum:][:space:]']", "", dataframe$dialogue)
+dataframe$string_dialogue = gsub("'", '',dataframe$string_dialogue)
+dataframe$lower_dialogue = tolower(dataframe$string_dialogue)
+str(dataframe)
+```
+3. Create new vector named words_vector where all words from lower_dialogue column will be added
+into your vector. You can use str_split() and make sure to remove empty strings like "" and english
+stopwords. Print first 10 elements from your words_vector.
+```{r p1.3, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(tm)
+words_vector = str_split(dataframe$lower_dialogue," ",simplify = TRUE)
+words_vector <- removeWords(words_vector, words = stopwords(kind = "en"))
+words_vector =str_subset(words_vector, ".+")
+print(words_vector[1:10])
+```
+
+4. Remove duplicates from your words_vector and store in vector named vocabulary.
+If you did everything correct you will have 5955 observations in words_vector and 1706 observations in
+vocabulary vector.
+
+```{r p1.3, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+vocabulary = unique(words_vector)
+print(length(words_vector))
+print(length(vocabulary))
+
+```
