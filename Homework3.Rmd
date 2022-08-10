@@ -106,6 +106,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(shiny)
 library(shinythemes)
 library(utils)
+df = vocab_data
 ui <- fluidPage(
   theme = shinytheme("journal"),
   titlePanel("Word Cloud Creator"),
@@ -119,17 +120,14 @@ ui <- fluidPage(
 )
 chooseWords = function(word) {
   vec = c()
-  print(head(vocab_data,n = 5))
-  df = vocab_data[order(vocab_data$probs),]
-  print(head(vocab_data,n = 5))
-  mat = adist(word,vocab_data$vocabulary)
-  print(mat[1,1:5])
-  for(i in 1:length(vocab_data$vocabulary)) {
+  df = df[order(df$probs),]
+  mat = adist(word,df$vocabulary)
+  for(i in 1:length(df$vocabulary)) {
     if(mat[1,i] == 2) {
       vec = c(vec,df[i,"vocabulary"])
     }
   }
-  
+  return(vec)
 }
 server <- function(input, output) {
   
@@ -140,8 +138,8 @@ server <- function(input, output) {
     }
   })
   output$Text = renderText({
-    wordsVector()
-    input$word
+    gotVector = wordsVector()
+    gotVector
   })
   
 }
